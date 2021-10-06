@@ -11,39 +11,63 @@ const addToList = (addedJsonData) => {
   updateList(dataArray);
 };
 
-const deleteFromList = (deletedJsonData) => {
-  const indexOfData = dataArray.indexOf(deletedJsonData);
+const deleteFromList = (postId) => {
+  const indexOfData = dataArray.findIndex((item) => item.id === postId);
   if (indexOfData > -1) {
     dataArray.splice(indexOfData, 1);
+    updateList(dataArray);
   }
+};
+
+const editFromList = (json) => {
+  dataArray = dataArray.map((item) => {
+    if (item.id === json.id) {
+      return json;
+    }
+    return item;
+  });
   updateList(dataArray);
 };
 
 const deleteComment = (postId) => {
-  for (i = 0; i < dataArray.length; i++) {
-    if (postId === dataArray[i].id) {
-      deleteFromList(dataArray[i]);
-    }
-  }
-
   fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
     method: "DELETE",
   })
     .then(() => {
-      deleteFromList(dataArray[i]);
+      deleteFromList(postId);
     })
     .catch((error) => console.log(error));
 };
 
-const editComment = (postID) => {
-  const findItem = dataArray.find((item) => item.id === postID);
+const editComment = () => {
+  const postID = document.getElementById("postId").value;
+  const edittingTitle = document.getElementById("editting-title").value;
+  const findItem = dataArray.find((item) => {
+    console.log("h", item);
+
+    // curly braces if not shorthand for 1 statement (i.e. ends with ;)
+    return item.id.toString() === postID;
+  });
+
   if (findItem) {
-    console.log("tada", findItem);
+    fetch(`https://jsonplaceholder.typicode.com/posts/${postID}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        title: edittingTitle,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => editFromList(json));
+  } else if (!findItem) {
+    console.log("There is no such post id.");
   }
 };
 
 const updateList = (jsonData) => {
-  list.innerHTML = "";
+  let inner = "";
   // for (i = jsonData.length - 1; i >= 0; i--) {
   //   console.log(jsonData[i]);
   //   list.innerHTML += `
@@ -59,17 +83,17 @@ const updateList = (jsonData) => {
   // }
 
   jsonData.forEach((item) => {
-    list.innerHTML += `
+    inner += `
     <div class="list-item">
         <div class="component userID">${item.userId}</div>
-        <div class="component id">${jitem.id}</div>
+        <div class="component id">${item.id}</div>
         <div class="component title">${item.title}</div>
         <div class="component body">${item.body}</div>
         <button class="delete" onclick="deleteComment(${item.id})">Delete</button>
-        <button class="edit" onclick="editComment(${item.id})">Edit</button>
     </div>
     `;
   });
+  list.innerHTML = inner;
 };
 
 fetch("https://jsonplaceholder.typicode.com/posts")
@@ -77,16 +101,22 @@ fetch("https://jsonplaceholder.typicode.com/posts")
   .then((json) => loadList(json))
   .catch((error) => console.log(error));
 
-fetch("https://jsonplaceholder.typicode.com/posts", {
-  method: "POST",
-  body: JSON.stringify({
-    title: "foo",
-    body: "bar",
-    userId: 1,
-  }),
-  headers: {
-    "Content-type": "application/json; charset=UTF-8",
-  },
-})
-  .then((response) => response.json())
-  .then((json) => addToList(json));
+const addComment = () => {
+  const yourID = document.getElementById("add-name").value;
+  const yourTitle = document.getElementById("add-title").value;
+  const yourBody = document.getElementById("add-body").value;
+
+  fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    body: JSON.stringify({
+      title: yourTitle,
+      body: yourBody,
+      userId: yourID.toString(),
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => addToList(json));
+};

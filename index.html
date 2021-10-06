@@ -8,18 +8,27 @@
   </head>
   <body>
     <div class="form-component">
-      <button class="edit" onclick="console.log(JSON.stringify({h:1, hel:2}))">
-        Edit
-      </button>
+      <div class="form-edit">
+        <label for="postId">Enter the post-id you want to edit: </label>
+        <input type="text" id="postId" />
+        <label for="title">Change title title: </label>
+        <input type="text" id="editting-title" />
+        <button class="edit" onclick="editComment()">Edit</button>
+      </div>
       <div>Create a new post</div>
       <div class="form-id">
-        <label for="name">Enter your id: </label>
-        <input type="text" />
+        <label for="add-name">Enter your id: </label>
+        <input type="text" id="add-name" />
       </div>
       <div class="form-id">
-        <label for="name">Enter your title: </label>
-        <input type="text" />
+        <label for="add-title">Enter your title: </label>
+        <input type="text" id="add-title" />
       </div>
+      <div class="form-id">
+        <label for="add-body">Enter your body: </label>
+        <input type="text" id="add-body" />
+      </div>
+      <button class="edit" onclick="addComment()">Edit</button>
     </div>
     <div class="list-title">
       <div class="component">user-id</div>

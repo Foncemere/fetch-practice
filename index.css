@@ -1,0 +1,17 @@
+.list-title {
+  width: 90%;
+  display: grid;
+  grid-template-columns: 60px 60px 250px auto;
+}
+
+.list-item {
+  width: 90%;
+  display: grid;
+  grid-template-columns: 60px 60px 250px auto;
+  padding: 10px;
+  border: 1px black solid;
+}
+
+.component {
+  padding-right: 10px;
+}
